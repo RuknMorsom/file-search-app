@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.filesearch.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>الباحث الذكي</name>
+    <description>نظام البحث المتقدم في الملفات</description>
+    <author email="your.email@example.com" href="https://yourwebsite.com">الباحث الذكي</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <platform name="android">
+        <preference name="android-minSdkVersion" value="21" />
+        <preference name="android-targetSdkVersion" value="33" />
+    </platform>
+    <icon src="images/icon-512x512.png" />
+</widget>
