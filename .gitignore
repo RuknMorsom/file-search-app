@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+*.apk
+*.aab
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+.env
+*.key
+*.pem
+coverage/
+*.swp
+*.swo
+*~
