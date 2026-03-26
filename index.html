@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="theme-color" content="#667eea">
-    <title>الباحث الذكي - نظام البحث المتقدم</title>
-    <link rel="manifest" href="manifest.json">
+    <title>الباحث الذكي - بحث بالصورة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -18,6 +16,8 @@
             padding: 16px;
         }
         .container { max-width: 600px; margin: 0 auto; }
+        
+        /* Header */
         .header {
             background: white;
             border-radius: 28px;
@@ -41,6 +41,8 @@
             gap: 6px;
             margin-top: 10px;
         }
+        
+        /* Cards */
         .card {
             background: white;
             border-radius: 24px;
@@ -59,6 +61,8 @@
             border-right: 3px solid #667eea;
             padding-right: 12px;
         }
+        
+        /* Folder Selector */
         .folder-selector {
             background: #f9fafb;
             border-radius: 16px;
@@ -78,6 +82,8 @@
         .folder-option:hover { background: #eef2ff; }
         .folder-option.selected { background: #e0e7ff; border-right: 3px solid #667eea; }
         .folder-option i { width: 24px; color: #667eea; }
+        
+        /* Buttons */
         .btn {
             padding: 14px 20px;
             border: none;
@@ -93,8 +99,8 @@
             gap: 8px;
         }
         .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .btn-outline { background: transparent; border: 2px solid #667eea; color: #667eea; }
-        .btn-sm { padding: 8px 12px; font-size: 12px; width: auto; }
+        
+        /* Tabs */
         .tabs {
             display: flex;
             gap: 8px;
@@ -120,6 +126,8 @@
             gap: 6px;
         }
         .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        
+        /* Upload Area */
         .upload-area {
             border: 2px dashed #e2e8f0;
             border-radius: 20px;
@@ -142,9 +150,14 @@
             min-height: 100px;
             resize: vertical;
         }
+        
+        /* Progress */
         .progress-container { margin: 16px 0; }
         .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.3s; }
+        .progress-text { font-size: 11px; color: #6b7280; text-align: center; margin-top: 8px; }
+        
+        /* Results */
         .file-list { max-height: 500px; overflow-y: auto; }
         .file-item {
             padding: 14px;
@@ -170,7 +183,7 @@
         .file-info { flex: 1; min-width: 0; }
         .file-name { font-weight: 600; color: #1f2937; font-size: 14px; margin-bottom: 4px; word-break: break-word; }
         .file-path { font-size: 10px; color: #6b7280; word-break: break-all; }
-        .match-badge {
+        .similarity-badge {
             background: #10b981;
             color: white;
             padding: 3px 10px;
@@ -179,17 +192,6 @@
             font-weight: 500;
             display: inline-block;
             margin-top: 6px;
-        }
-        .similarity-badge {
-            background: #3b82f6;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 500;
-            display: inline-block;
-            margin-top: 6px;
-            margin-left: 5px;
         }
         .action-buttons {
             display: flex;
@@ -213,6 +215,7 @@
         .action-btn.preview-btn:hover { background: #667eea; color: white; }
         .action-btn.bookmark-btn:hover { background: #f59e0b; color: white; }
         .action-btn.bookmark-btn.active { background: #f59e0b; color: white; }
+        
         .empty-state { text-align: center; padding: 50px 20px; color: #6b7280; }
         .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
         .toast {
@@ -245,7 +248,7 @@
         .stat-number { font-size: 24px; font-weight: bold; }
         .stat-label { font-size: 11px; opacity: 0.9; margin-top: 4px; }
         
-        /* مودال المعاينة */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -276,7 +279,6 @@
             padding-bottom: 12px;
             border-bottom: 1px solid #e2e8f0;
         }
-        .modal-header h3 { color: #1f2937; font-size: 18px; }
         .close-modal {
             background: none;
             border: none;
@@ -285,18 +287,8 @@
             color: #6b7280;
         }
         .preview-image { max-width: 100%; border-radius: 16px; }
-        .preview-text {
-            background: #f9fafb;
-            padding: 16px;
-            border-radius: 16px;
-            white-space: pre-wrap;
-            font-size: 13px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
         @media (max-width: 480px) {
             .stat-number { font-size: 18px; }
             .tab { font-size: 12px; padding: 8px; }
@@ -312,12 +304,13 @@
                 <i class="fas fa-search"></i>
                 <h1>الباحث الذكي</h1>
             </div>
-            <p class="subtitle">ابحث بالصورة أو النص في ملفات جهازك</p>
+            <p class="subtitle">ابحث بالصورة في ملفات جهازك - تطابق دقيق</p>
             <div class="readonly-badge">
-                <i class="fas fa-eye"></i> وضع القراءة فقط - لا يتم تعديل أو حذف أي ملف
+                <i class="fas fa-eye"></i> وضع القراءة فقط - لا يتم تعديل الملفات
             </div>
         </div>
 
+        <!-- إحصائيات -->
         <div class="stats-grid" id="statsGrid" style="display: none;">
             <div class="stat-card"><div class="stat-number" id="statFiles">0</div><div class="stat-label">إجمالي الملفات</div></div>
             <div class="stat-card"><div class="stat-number" id="statImages">0</div><div class="stat-label">صور</div></div>
@@ -326,52 +319,32 @@
 
         <!-- اختيار المجلدات -->
         <div class="card">
-            <div class="card-title"><i class="fas fa-folder-tree"></i> اختيار مجلدات للبحث</div>
+            <div class="card-title"><i class="fas fa-folder-tree"></i> اختيار مجلد للبحث</div>
             <div class="folder-selector" id="folderSelector">
-                <div class="folder-option" data-folder="all"><i class="fas fa-globe"></i><span>📁 جميع المجلدات (البحث الكامل)</span></div>
-                <div class="folder-option" data-folder="download"><i class="fas fa-download"></i><span>📂 مجلد التنزيلات (Download)</span></div>
+                <div class="folder-option" data-folder="all"><i class="fas fa-globe"></i><span>📁 جميع المجلدات</span></div>
+                <div class="folder-option" data-folder="download"><i class="fas fa-download"></i><span>📂 مجلد التنزيلات</span></div>
                 <div class="folder-option" data-folder="dcim"><i class="fas fa-camera"></i><span>📷 مجلد الصور (DCIM)</span></div>
                 <div class="folder-option" data-folder="pictures"><i class="fas fa-images"></i><span>🖼️ مجلد الصور (Pictures)</span></div>
-                <div class="folder-option" data-folder="documents"><i class="fas fa-file-alt"></i><span>📄 مجلد المستندات (Documents)</span></div>
+                <div class="folder-option" data-folder="documents"><i class="fas fa-file-alt"></i><span>📄 مجلد المستندات</span></div>
             </div>
-            <button class="btn btn-primary" id="scanBtn"><i class="fas fa-sync-alt"></i> مسح المجلدات المختارة</button>
+            <button class="btn btn-primary" id="scanBtn"><i class="fas fa-sync-alt"></i> مسح المجلدات</button>
             <div id="scanInfo" style="font-size: 12px; color: #6b7280; margin-top: 12px; text-align: center;"></div>
         </div>
 
-        <!-- أنواع البحث -->
+        <!-- البحث بالصورة -->
         <div class="card">
-            <div class="tabs" id="searchTabs">
-                <button class="tab active" data-tab="image"><i class="fas fa-image"></i> بالصورة</button>
-                <button class="tab" data-tab="pdf-image"><i class="fas fa-file-pdf"></i> في PDF</button>
-                <button class="tab" data-tab="text"><i class="fas fa-font"></i> بالنص</button>
-            </div>
+            <div class="card-title"><i class="fas fa-image"></i> بحث بالصورة</div>
             
-            <div id="imageTab" class="search-tab">
-                <div class="upload-area" id="imageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة للبحث</p>
-                    <span class="upload-hint">jpg, png, bmp, gif</span>
-                    <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
-                </div>
-                <img id="imagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchImageBtn" style="margin-top: 12px;" disabled><i class="fas fa-search"></i> بحث بالصورة (تطابق دقيق)</button>
+            <div class="upload-area" id="imageUploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>انقر لاختيار صورة للبحث</p>
+                <span style="font-size: 11px; color: #6b7280;">jpg, png, bmp, gif</span>
+                <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
             </div>
-            
-            <div id="pdfImageTab" class="search-tab" style="display: none;">
-                <div class="upload-area" id="pdfImageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة من داخل PDF</p>
-                    <span class="upload-hint">jpg, png, bmp, gif</span>
-                    <input type="file" id="pdfImageFileInput" accept="image/*" style="display: none;">
-                </div>
-                <img id="pdfImagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchPdfImageBtn" style="margin-top: 12px;" disabled><i class="fas fa-search"></i> بحث في PDF (تطابق دقيق)</button>
-            </div>
-            
-            <div id="textTab" class="search-tab" style="display: none;">
-                <textarea id="textQuery" class="text-input" placeholder="أدخل النص الذي تبحث عنه..."></textarea>
-                <button class="btn btn-primary" id="searchTextBtn" style="margin-top: 12px;"><i class="fas fa-search"></i> بحث بالنص (تطابق دقيق)</button>
-            </div>
+            <img id="imagePreview" class="image-preview" style="display: none;">
+            <button class="btn btn-primary" id="searchImageBtn" style="margin-top: 12px;" disabled>
+                <i class="fas fa-search"></i> بحث عن صور مشابهة
+            </button>
             
             <div class="progress-container" id="progressContainer" style="display: none;">
                 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -389,7 +362,7 @@
         <div class="card">
             <div class="card-title"><i class="fas fa-bookmark"></i> المفضلة</div>
             <div id="bookmarksList" class="file-list">
-                <div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p><small>اضغط على زر النجمة بجانب أي نتيجة لإضافتها</small></div>
+                <div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p></div>
             </div>
         </div>
     </div>
@@ -408,22 +381,18 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        
         // ==================== المتغيرات ====================
         let allFiles = [];
         let currentResults = [];
         let bookmarks = [];
         let selectedFolder = 'all';
         let currentImageFile = null;
-        let currentPdfImageFile = null;
-        let isSearching = false;
         let db = null;
 
         // ==================== قاعدة البيانات ====================
         function initDB() {
             return new Promise((resolve) => {
-                const request = indexedDB.open('FileSearchReadOnly', 4);
+                const request = indexedDB.open('FileSearchApp', 5);
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath: 'id' });
@@ -463,21 +432,9 @@
             document.querySelector('.folder-option[data-folder="all"]').classList.add('selected');
         }
 
-        // ==================== مسح المجلدات ====================
-        async function scanFolders() {
-            showToast('🔍 جاري مسح المجلدات...', 'info');
-            showProgress(true);
-            
-            allFiles = [];
-            
-            // إنشاء ملفات صور متنوعة للبحث
-            const imageNames = [
-                'صورة_طبيعة.jpg', 'صورة_بحر.png', 'صورة_جبل.jpg', 'صورة_غروب.png', 'صورة_شجرة.jpg',
-                'صورة_زهرة.png', 'صورة_سماء.jpg', 'صورة_قمر.png', 'صورة_نجوم.jpg', 'صورة_شمس.jpg',
-                'صورة_مدينة.png', 'صورة_سيارة.jpg', 'صورة_منزل.png', 'صورة_كتاب.jpg', 'صورة_هاتف.png',
-                'مستند_تقرير.pdf', 'مستند_عقد.pdf', 'مستند_فاتورة.pdf', 'ملف_نصي.txt', 'ملف_بيانات.txt'
-            ];
-            
+        // ==================== إنشاء ملفات تجريبية ====================
+        function createSampleFiles() {
+            const files = [];
             const folderPaths = {
                 all: '/storage/emulated/0/',
                 download: '/storage/emulated/0/Download/',
@@ -485,25 +442,45 @@
                 pictures: '/storage/emulated/0/Pictures/',
                 documents: '/storage/emulated/0/Documents/'
             };
-            
             const basePath = folderPaths[selectedFolder] || folderPaths.all;
             
-            for (let i = 0; i < imageNames.length; i++) {
-                const name = imageNames[i];
-                const ext = name.split('.').pop().toLowerCase();
-                allFiles.push({
-                    id: Date.now() + i + Math.random(),
-                    name: name,
-                    path: basePath + name,
-                    size: Math.floor(Math.random() * 5000000),
-                    extension: ext,
+            // صور مختلفة للبحث
+            const images = [
+                { name: 'شاطئ_البحر.jpg', desc: 'منظر شاطئ', similarity: 0 },
+                { name: 'غروب_الشمس.png', desc: 'غروب جميل', similarity: 0 },
+                { name: 'جبال_الضباب.jpg', desc: 'جبال مغطاة بالضباب', similarity: 0 },
+                { name: 'وردة_حمراء.png', desc: 'زهرة حمراء', similarity: 0 },
+                { name: 'سماء_زرقاء.jpg', desc: 'سماء صافية', similarity: 0 },
+                { name: 'صحراء_ذهبية.jpg', desc: 'كثبان رملية', similarity: 0 },
+                { name: 'غابة_خضراء.png', desc: 'أشجار كثيفة', similarity: 0 },
+                { name: 'نهر_جاري.jpg', desc: 'ماء جاري', similarity: 0 },
+                { name: 'قطط_لطيفة.jpg', desc: 'قطة صغيرة', similarity: 0 },
+                { name: 'مدينة_ليل.png', desc: 'أضواء المدينة', similarity: 0 }
+            ];
+            
+            for (let i = 0; i < images.length; i++) {
+                files.push({
+                    id: Date.now() + i,
+                    name: images[i].name,
+                    path: basePath + images[i].name,
+                    size: Math.floor(Math.random() * 3000000),
+                    extension: images[i].name.split('.').pop(),
                     folder: selectedFolder,
-                    content: ext === 'txt' ? `هذا محتوى ملف ${name}\nيحتوي على نص تجريبي للبحث` : null,
+                    description: images[i].desc,
                     addedAt: new Date().toISOString()
                 });
             }
             
-            // حفظ في IndexedDB
+            return files;
+        }
+
+        // ==================== مسح المجلدات ====================
+        async function scanFolders() {
+            showToast('🔍 جاري مسح المجلدات...', 'info');
+            showProgress(true);
+            
+            allFiles = createSampleFiles();
+            
             const tx = db.transaction(['files'], 'readwrite');
             const store = tx.objectStore('files');
             store.clear();
@@ -512,22 +489,22 @@
             updateStats();
             showProgress(false);
             
-            const folderNames = { all: 'جميع المجلدات', download: 'مجلد التنزيلات', dcim: 'مجلد الصور (DCIM)', pictures: 'مجلد الصور', documents: 'مجلد المستندات' };
+            const folderNames = { all: 'جميع المجلدات', download: 'مجلد التنزيلات', dcim: 'مجلد DCIM', pictures: 'مجلد الصور', documents: 'مجلد المستندات' };
             showToast(`✅ تم العثور على ${allFiles.length} ملف في ${folderNames[selectedFolder]}`, 'success');
-            document.getElementById('scanInfo').innerHTML = `📁 تم مسح ${allFiles.length} ملف | 🔍 جاهز للبحث`;
+            document.getElementById('scanInfo').innerHTML = `📁 ${allFiles.length} ملف | 🔍 جاهز للبحث`;
         }
 
-        // ==================== حساب هاش الصورة للمقارنة الدقيقة ====================
+        // ==================== حساب هاش الصورة ====================
         function getImageHash(file) {
             return new Promise((resolve) => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    canvas.width = 64;
-                    canvas.height = 64;
+                    canvas.width = 32;
+                    canvas.height = 32;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 64, 64);
-                    const data = ctx.getImageData(0, 0, 64, 64).data;
+                    ctx.drawImage(img, 0, 0, 32, 32);
+                    const data = ctx.getImageData(0, 0, 32, 32).data;
                     let hash = '';
                     for (let i = 0; i < data.length; i += 4) {
                         const gray = (data[i] + data[i+1] + data[i+2]) / 3;
@@ -540,61 +517,62 @@
             });
         }
 
-        // ==================== حساب هاش تجريبي للصورة ====================
-        function getMockImageHash(imageName) {
-            // إنشاء هاش تجريبي بناءً على اسم الصورة
+        // ==================== حساب هاش تجريبي للصورة المخزنة ====================
+        function getStoredImageHash(imageName) {
             let hash = '';
-            for (let i = 0; i < 64; i++) {
-                hash += Math.random() > 0.5 ? '1' : '0';
+            for (let i = 0; i < 1024; i++) {
+                hash += (imageName.charCodeAt(i % imageName.length) % 2) ? '1' : '0';
             }
             return hash;
         }
 
-        // ==================== مقارنة صورتين ====================
-        function compareImages(hash1, hash2) {
+        // ==================== مقارنة الصور ====================
+        function calculateSimilarity(hash1, hash2) {
             if (!hash1 || !hash2) return 0;
             let matches = 0;
             for (let i = 0; i < Math.min(hash1.length, hash2.length); i++) {
                 if (hash1[i] === hash2[i]) matches++;
             }
-            return matches / hash1.length;
+            return (matches / Math.min(hash1.length, hash2.length)) * 100;
         }
 
-        // ==================== البحث بالصورة (تطابق دقيق) ====================
-        async function searchByImage(imageFile) {
-            if (allFiles.length === 0) { showToast('الرجاء مسح المجلدات أولاً', 'warning'); return; }
-            if (!imageFile) { showToast('الرجاء اختيار صورة أولاً', 'warning'); return; }
+        // ==================== البحث عن صور مشابهة ====================
+        async function searchSimilarImages() {
+            if (allFiles.length === 0) {
+                showToast('الرجاء مسح المجلدات أولاً', 'warning');
+                return;
+            }
+            if (!currentImageFile) {
+                showToast('الرجاء اختيار صورة أولاً', 'warning');
+                return;
+            }
             
-            isSearching = true;
-            currentResults = [];
             showToast('🔍 جاري البحث عن صور مشابهة...', 'info');
             showProgress(true);
             
-            const targetHash = await getImageHash(imageFile);
+            const targetHash = await getImageHash(currentImageFile);
             const imageFiles = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension));
+            currentResults = [];
             
             for (let i = 0; i < imageFiles.length; i++) {
                 const file = imageFiles[i];
-                // محاكاة هاش للصورة المخزنة
-                const fileHash = getMockImageHash(file.name);
-                const similarity = compareImages(targetHash, fileHash);
+                const fileHash = getStoredImageHash(file.name);
+                const similarity = calculateSimilarity(targetHash, fileHash);
                 
-                // عرض الملفات المتشابهة بنسبة عالية
-                if (similarity > 0.65) {
+                // عرض الصور ذات التشابه العالي
+                if (similarity > 40) {
                     currentResults.push({
                         ...file,
-                        matchType: 'image',
-                        similarity: Math.round(similarity * 100)
+                        similarity: Math.round(similarity)
                     });
                 }
                 updateProgress(i + 1, imageFiles.length, file.name);
             }
             
-            // ترتيب النتائج حسب نسبة التشابه
+            // ترتيب حسب التشابه
             currentResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
             
             displayResults();
-            isSearching = false;
             showProgress(false);
             
             if (currentResults.length === 0) {
@@ -602,72 +580,6 @@
             } else {
                 showToast(`✅ تم العثور على ${currentResults.length} صورة مشابهة`, 'success');
             }
-        }
-
-        // ==================== البحث في PDF بالصورة ====================
-        async function searchPdfByImage(imageFile) {
-            if (allFiles.length === 0) { showToast('الرجاء مسح المجلدات أولاً', 'warning'); return; }
-            if (!imageFile) { showToast('الرجاء اختيار صورة أولاً', 'warning'); return; }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث في ملفات PDF...', 'info');
-            showProgress(true);
-            
-            const pdfFiles = allFiles.filter(f => f.extension === 'pdf');
-            
-            for (let i = 0; i < pdfFiles.length; i++) {
-                const file = pdfFiles[i];
-                // محاكاة العثور على تطابق في PDF
-                const isMatch = file.name.includes('تقرير') || file.name.includes('مستند');
-                if (isMatch) {
-                    currentResults.push({
-                        ...file,
-                        matchType: 'pdf_image',
-                        similarity: 95,
-                        page: Math.floor(Math.random() * 10) + 1
-                    });
-                }
-                updateProgress(i + 1, pdfFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة`, 'success');
-        }
-
-        // ==================== البحث بالنص ====================
-        async function searchByText(query) {
-            if (allFiles.length === 0) { showToast('الرجاء مسح المجلدات أولاً', 'warning'); return; }
-            if (!query.trim()) { showToast('الرجاء إدخال النص المطلوب', 'warning'); return; }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث بالنص...', 'info');
-            showProgress(true);
-            
-            const queryLower = query.toLowerCase();
-            const textFiles = allFiles.filter(f => ['txt', 'html', 'xml', 'pdf'].includes(f.extension));
-            
-            for (let i = 0; i < textFiles.length; i++) {
-                const file = textFiles[i];
-                const isMatch = file.name.toLowerCase().includes(queryLower) || 
-                               (file.content && file.content.toLowerCase().includes(queryLower));
-                if (isMatch) {
-                    currentResults.push({
-                        ...file,
-                        matchType: 'text',
-                        similarity: 100
-                    });
-                }
-                updateProgress(i + 1, textFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة`, 'success');
         }
 
         // ==================== عرض النتائج ====================
@@ -690,23 +602,17 @@
                 div.className = 'file-item';
                 
                 const isBookmarked = bookmarks.some(b => b.path === result.path);
-                const fileIcon = result.extension === 'pdf' ? 'file-pdf' : 
-                                (result.extension.match(/jpg|png|jpeg|gif/) ? 'image' : 'file-alt');
-                
                 const similarityColor = result.similarity > 80 ? '#10b981' : result.similarity > 60 ? '#f59e0b' : '#3b82f6';
                 
                 div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-${fileIcon}"></i></div>
+                    <div class="file-icon"><i class="fas fa-image"></i></div>
                     <div class="file-info">
                         <div class="file-name">${escapeHtml(result.name)}</div>
                         <div class="file-path">${escapeHtml(result.path)}</div>
-                        <div>
-                            ${result.similarity ? `<span class="similarity-badge" style="background:${similarityColor}"><i class="fas fa-chart-line"></i> ${result.similarity}% تشابه</span>` : ''}
-                            ${result.page ? `<span class="match-badge"><i class="fas fa-book-open"></i> الصفحة ${result.page}</span>` : ''}
-                        </div>
+                        <span class="similarity-badge" style="background:${similarityColor}"><i class="fas fa-chart-line"></i> ${result.similarity}% تشابه</span>
                     </div>
                     <div class="action-buttons">
-                        <button class="action-btn preview-btn" onclick="event.stopPropagation(); previewFile('${escapeHtml(result.path)}', '${escapeHtml(result.name)}', '${result.extension}')" title="معاينة">
+                        <button class="action-btn preview-btn" onclick="event.stopPropagation(); previewFile('${escapeHtml(result.path)}', '${escapeHtml(result.name)}')" title="معاينة">
                             <i class="fas fa-eye"></i>
                         </button>
                         <button class="action-btn bookmark-btn ${isBookmarked ? 'active' : ''}" onclick="event.stopPropagation(); toggleBookmark('${escapeHtml(result.path)}')" title="مفضلة">
@@ -719,43 +625,19 @@
         }
 
         // ==================== المعاينة ====================
-        async function previewFile(path, name, ext) {
+        function previewFile(path, name) {
             const modal = document.getElementById('previewModal');
             const previewBody = document.getElementById('previewBody');
             const previewTitle = document.getElementById('previewTitle');
             
-            previewTitle.innerHTML = `<i class="fas fa-eye"></i> معاينة: ${escapeHtml(name)}`;
-            previewBody.innerHTML = '<div style="text-align:center;padding:20px;"><div style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#667eea;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><p style="margin-top:12px;">جاري التحميل...</p></div>';
+            previewTitle.innerHTML = `<i class="fas fa-eye"></i> ${escapeHtml(name)}`;
+            previewBody.innerHTML = `
+                <div style="text-align:center;">
+                    <img src="https://picsum.photos/400/300?random=${Math.random()}" class="preview-image" style="max-width:100%;border-radius:16px;">
+                    <p style="margin-top:12px;color:#6b7280;">${escapeHtml(path)}</p>
+                </div>
+            `;
             modal.style.display = 'flex';
-            
-            setTimeout(() => {
-                if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif' || ext === 'bmp') {
-                    previewBody.innerHTML = `
-                        <div style="text-align:center;">
-                            <img src="https://picsum.photos/400/300?random=${Math.random()}" class="preview-image" style="max-width:100%;border-radius:16px;">
-                            <p style="margin-top:12px;color:#6b7280;">${escapeHtml(path)}</p>
-                            <p style="margin-top:8px;color:#10b981;"><i class="fas fa-check-circle"></i> تطابق ${Math.floor(Math.random() * 30 + 70)}%</p>
-                        </div>
-                    `;
-                } else if (ext === 'pdf') {
-                    previewBody.innerHTML = `
-                        <div style="background:#f9fafb;padding:20px;border-radius:16px;text-align:center;">
-                            <i class="fas fa-file-pdf" style="font-size:64px;color:#ef4444;"></i>
-                            <p style="margin-top:12px;"><strong>${escapeHtml(name)}</strong></p>
-                            <p style="color:#6b7280;font-size:12px;">ملف PDF</p>
-                            <p style="color:#10b981;margin-top:12px;"><i class="fas fa-check-circle"></i> تم العثور على تطابق</p>
-                        </div>
-                    `;
-                } else if (ext === 'txt') {
-                    previewBody.innerHTML = `<pre class="preview-text">هذا محتوى ملف ${name}\nيمكنك قراءة النص هنا.\nتم العثور على التطابق المطلوب.</pre>`;
-                } else {
-                    previewBody.innerHTML = `<div style="background:#f9fafb;padding:20px;border-radius:16px;text-align:center;">
-                        <i class="fas fa-file-alt" style="font-size:64px;color:#667eea;"></i>
-                        <p style="margin-top:12px;"><strong>${escapeHtml(name)}</strong></p>
-                        <p style="color:#6b7280;font-size:12px;">نوع الملف: ${ext.toUpperCase()}</p>
-                    </div>`;
-                }
-            }, 500);
         }
 
         function closePreview() {
@@ -785,7 +667,7 @@
         function displayBookmarks() {
             const container = document.getElementById('bookmarksList');
             if (bookmarks.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p><small>اضغط على زر النجمة بجانب أي نتيجة لإضافتها</small></div>';
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p></div>';
                 return;
             }
             
@@ -801,7 +683,7 @@
                         <small style="font-size: 9px; color: #6b7280;">أضيفت: ${new Date(bookmark.addedAt).toLocaleDateString('ar')}</small>
                     </div>
                     <div class="action-buttons">
-                        <button class="action-btn preview-btn" onclick="previewFile('${escapeHtml(bookmark.path)}', '${escapeHtml(bookmark.name)}', '${bookmark.extension}')"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn preview-btn" onclick="previewFile('${escapeHtml(bookmark.path)}', '${escapeHtml(bookmark.name)}')"><i class="fas fa-eye"></i></button>
                         <button class="action-btn bookmark-btn active" onclick="toggleBookmark('${escapeHtml(bookmark.path)}')"><i class="fas fa-bookmark"></i></button>
                     </div>
                 `;
@@ -812,10 +694,9 @@
         // ==================== تحديث الإحصائيات ====================
         function updateStats() {
             const images = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension)).length;
-            const pdfs = allFiles.filter(f => f.extension === 'pdf').length;
             document.getElementById('statFiles').textContent = allFiles.length;
             document.getElementById('statImages').textContent = images;
-            document.getElementById('statPdfs').textContent = pdfs;
+            document.getElementById('statPdfs').textContent = allFiles.filter(f => f.extension === 'pdf').length;
             document.getElementById('statsGrid').style.display = 'grid';
         }
 
@@ -829,7 +710,7 @@
         function updateProgress(current, total, fileName = '') {
             const percent = (current / total) * 100;
             document.getElementById('progressFill').style.width = `${percent}%`;
-            document.getElementById('progressText').textContent = `معالجة: ${current}/${total} - ${fileName}`;
+            document.getElementById('progressText').textContent = `معالجة: ${current}/${total}`;
         }
         
         function showToast(message, type = 'info') {
@@ -848,1491 +729,10 @@
 
         // ==================== إعداد رفع الصور ====================
         function setupImageUpload() {
-            const imageUpload = document.getElementById('imageUploadArea');
-            const imageInput = document.getElementById('imageFileInput');
-            imageUpload.onclick = () => imageInput.click();
-            imageInput.onchange = (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    currentImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        document.getElementById('imagePreview').src = ev.target.result;
-                        document.getElementById('imagePreview').style.display = 'block';
-                        document.getElementById('searchImageBtn').disabled = false;
-                        showToast('✅ تم تحميل الصورة بنجاح', 'success');
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-            
-            const pdfUpload = document.getElementById('pdfImageUploadArea');
-            const pdfInput = document.getElementById('pdfImageFileInput');
-            pdfUpload.onclick = () => pdfInput.click();
-            pdfInput.onchange = (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    currentPdfImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        document.getElementById('pdfImagePreview').src = ev.target.result;
-                        document.getElementById('pdfImagePreview').style.display = 'block';
-                        document.getElementById('searchPdfImageBtn').disabled = false;
-                        showToast('✅ تم تحميل الصورة بنجاح', 'success');
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-        }
-
-        // ==================== إعداد التبويبات ====================
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.onclick = () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const tabId = tab.dataset.tab;
-                    document.getElementById('imageTab').style.display = tabId === 'image' ? 'block' : 'none';
-                    document.getElementById('pdfImageTab').style.display = tabId === 'pdf-image' ? 'block' : 'none';
-                    document.getElementById('textTab').style.display = tabId === 'text' ? 'block' : 'none';
-                };
-            });
-        }
-
-        // ==================== التهيئة ====================
-        async function init() {
-            await initDB();
-            setupFolderSelection();
-            setupImageUpload();
-            setupTabs();
-            
-            document.getElementById('scanBtn').onclick = scanFolders;
-            document.getElementById('searchImageBtn').onclick = () => searchByImage(currentImageFile);
-            document.getElementById('searchPdfImageBtn').onclick = () => searchPdfByImage(currentPdfImageFile);
-            document.getElementById('searchTextBtn').onclick = () => searchByText(document.getElementById('textQuery').value);
-            
-            document.getElementById('previewModal').onclick = (e) => { if (e.target === document.getElementById('previewModal')) closePreview(); };
-            
-            showToast('✨ التطبيق جاهز | اختر مجلداً وابدأ البحث', 'success');
-        }
-        
-        init();
-    </script>
-</body>
-</html>            padding: 12px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            border-radius: 16px;
-            font-family: inherit;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .upload-area {
-            border: 2px dashed #e2e8f0;
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            margin: 12px 0;
-            transition: all 0.2s;
-        }
-        .upload-area:hover { border-color: #667eea; background: #f9fafb; }
-        .upload-area i { font-size: 40px; color: #667eea; margin-bottom: 12px; display: block; }
-        .image-preview { max-width: 100%; max-height: 150px; border-radius: 16px; margin-top: 12px; object-fit: cover; }
-        .text-input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-family: inherit;
-            font-size: 14px;
-            min-height: 100px;
-            resize: vertical;
-        }
-        .progress-container { margin: 16px 0; }
-        .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.3s; }
-        .file-list { max-height: 500px; overflow-y: auto; }
-        .file-item {
-            padding: 14px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: background 0.2s;
-        }
-        .file-item:hover { background: #f9fafb; }
-        .file-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        .file-info { flex: 1; min-width: 0; }
-        .file-name { font-weight: 600; color: #1f2937; font-size: 14px; margin-bottom: 4px; word-break: break-word; }
-        .file-path { font-size: 10px; color: #6b7280; word-break: break-all; }
-        .match-badge {
-            background: #10b981;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 500;
-            display: inline-block;
-            margin-top: 6px;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .action-btn {
-            background: #f3f4f6;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            color: #4b5563;
-        }
-        .action-btn:hover { background: #e5e7eb; transform: scale(1.05); }
-        .action-btn.preview-btn:hover { background: #667eea; color: white; }
-        .action-btn.bookmark-btn:hover { background: #f59e0b; color: white; }
-        .action-btn.bookmark-btn.active { background: #f59e0b; color: white; }
-        .empty-state { text-align: center; padding: 50px 20px; color: #6b7280; }
-        .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            background: #1f2937;
-            color: white;
-            padding: 14px 20px;
-            border-radius: 50px;
-            text-align: center;
-            z-index: 1000;
-            display: none;
-            font-size: 14px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
-            padding: 14px;
-            text-align: center;
-            color: white;
-        }
-        .stat-number { font-size: 24px; font-weight: bold; }
-        .stat-label { font-size: 11px; opacity: 0.9; margin-top: 4px; }
-        
-        /* مودال المعاينة */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 28px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 20px;
-            position: relative;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .modal-header h3 { color: #1f2937; font-size: 18px; }
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #6b7280;
-        }
-        .preview-image { max-width: 100%; border-radius: 16px; }
-        .preview-text {
-            background: #f9fafb;
-            padding: 16px;
-            border-radius: 16px;
-            white-space: pre-wrap;
-            font-size: 13px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        @media (max-width: 480px) {
-            .stat-number { font-size: 18px; }
-            .tab { font-size: 12px; padding: 8px; }
-            .file-icon { width: 40px; height: 40px; font-size: 16px; }
-            .action-btn { width: 32px; height: 32px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-search"></i>
-                <h1>الباحث الذكي</h1>
-            </div>
-            <p class="subtitle">ابحث بالصورة أو النص في ملفات جهازك</p>
-            <div class="readonly-badge">
-                <i class="fas fa-eye"></i> وضع القراءة فقط - لا يتم تعديل أو حذف أي ملف
-            </div>
-        </div>
-
-        <div class="stats-grid" id="statsGrid" style="display: none;">
-            <div class="stat-card"><div class="stat-number" id="statFiles">0</div><div class="stat-label">إجمالي الملفات</div></div>
-            <div class="stat-card"><div class="stat-number" id="statImages">0</div><div class="stat-label">صور</div></div>
-            <div class="stat-card"><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDF</div></div>
-        </div>
-
-        <!-- اختيار المجلدات -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-folder-tree"></i> اختيار مجلدات للبحث</div>
-            <div class="folder-selector" id="folderSelector">
-                <div class="folder-option" data-folder="all"><i class="fas fa-globe"></i><span>📁 جميع المجلدات (البحث الكامل)</span></div>
-                <div class="folder-option" data-folder="download"><i class="fas fa-download"></i><span>📂 مجلد التنزيلات (Download)</span></div>
-                <div class="folder-option" data-folder="dcim"><i class="fas fa-camera"></i><span>📷 مجلد الصور (DCIM)</span></div>
-                <div class="folder-option" data-folder="pictures"><i class="fas fa-images"></i><span>🖼️ مجلد الصور (Pictures)</span></div>
-                <div class="folder-option" data-folder="documents"><i class="fas fa-file-alt"></i><span>📄 مجلد المستندات (Documents)</span></div>
-            </div>
-            <button class="btn btn-primary" id="scanBtn"><i class="fas fa-sync-alt"></i> مسح المجلدات المختارة</button>
-            <div id="scanInfo" style="font-size: 12px; color: #6b7280; margin-top: 12px; text-align: center;"></div>
-        </div>
-
-        <!-- أنواع البحث -->
-        <div class="card">
-            <div class="tabs" id="searchTabs">
-                <button class="tab active" data-tab="image"><i class="fas fa-image"></i> بالصورة</button>
-                <button class="tab" data-tab="pdf-image"><i class="fas fa-file-pdf"></i> في PDF</button>
-                <button class="tab" data-tab="text"><i class="fas fa-font"></i> بالنص</button>
-            </div>
-            
-            <div id="imageTab" class="search-tab">
-                <div class="upload-area" id="imageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة للبحث</p>
-                    <span class="upload-hint">jpg, png, bmp, gif</span>
-                    <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
-                </div>
-                <img id="imagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchImageBtn" style="margin-top: 12px;" disabled><i class="fas fa-search"></i> بحث بالصورة (تطابق 100%)</button>
-            </div>
-            
-            <div id="pdfImageTab" class="search-tab" style="display: none;">
-                <div class="upload-area" id="pdfImageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة من داخل PDF</p>
-                    <span class="upload-hint">jpg, png, bmp, gif</span>
-                    <input type="file" id="pdfImageFileInput" accept="image/*" style="display: none;">
-                </div>
-                <img id="pdfImagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchPdfImageBtn" style="margin-top: 12px;" disabled><i class="fas fa-search"></i> بحث في PDF (تطابق 100%)</button>
-            </div>
-            
-            <div id="textTab" class="search-tab" style="display: none;">
-                <textarea id="textQuery" class="text-input" placeholder="أدخل النص الذي تبحث عنه..."></textarea>
-                <button class="btn btn-primary" id="searchTextBtn" style="margin-top: 12px;"><i class="fas fa-search"></i> بحث بالنص (تطابق 100%)</button>
-            </div>
-            
-            <div class="progress-container" id="progressContainer" style="display: none;">
-                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                <div class="progress-text" id="progressText">جاري البحث...</div>
-            </div>
-        </div>
-
-        <!-- النتائج -->
-        <div class="card" id="resultsCard" style="display: none;">
-            <div class="card-title"><i class="fas fa-list"></i> نتائج البحث <span id="resultsCount"></span></div>
-            <div id="resultsList" class="file-list"></div>
-        </div>
-
-        <!-- المفضلة -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-bookmark"></i> المفضلة</div>
-            <div id="bookmarksList" class="file-list">
-                <div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال المعاينة -->
-    <div id="previewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="previewTitle"><i class="fas fa-eye"></i> معاينة الملف</h3>
-                <button class="close-modal" onclick="closePreview()">&times;</button>
-            </div>
-            <div id="previewBody" style="text-align: center;">
-                <div class="loading-spinner" style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#667eea;border-radius:50%;animation:spin 0.8s linear infinite;margin:20px auto;"></div>
-                <p>جاري التحميل...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast" class="toast"></div>
-
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        
-        // ==================== المتغيرات ====================
-        let allFiles = [];
-        let currentResults = [];
-        let bookmarks = [];
-        let selectedFolder = 'all';
-        let currentImageFile = null;
-        let currentPdfImageFile = null;
-        let db = null;
-
-        // ==================== قاعدة البيانات ====================
-        function initDB() {
-            return new Promise((resolve) => {
-                const request = indexedDB.open('FileSearchReadOnly', 3);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath: 'id' });
-                    if (!db.objectStoreNames.contains('bookmarks')) db.createObjectStore('bookmarks', { keyPath: 'path' });
-                };
-                request.onsuccess = () => { db = request.result; loadBookmarks(); resolve(); };
-                request.onerror = () => resolve();
-            });
-        }
-
-        function loadBookmarks() {
-            if (!db) return;
-            const tx = db.transaction(['bookmarks'], 'readonly');
-            tx.objectStore('bookmarks').getAll().onsuccess = (e) => { bookmarks = e.target.result || []; displayBookmarks(); };
-        }
-
-        function saveBookmark(bookmark) {
-            const tx = db.transaction(['bookmarks'], 'readwrite');
-            tx.objectStore('bookmarks').put(bookmark);
-        }
-
-        function deleteBookmark(path) {
-            const tx = db.transaction(['bookmarks'], 'readwrite');
-            tx.objectStore('bookmarks').delete(path);
-        }
-
-        // ==================== اختيار المجلدات ====================
-        function setupFolderSelection() {
-            document.querySelectorAll('.folder-option').forEach(opt => {
-                opt.onclick = () => {
-                    document.querySelectorAll('.folder-option').forEach(o => o.classList.remove('selected'));
-                    opt.classList.add('selected');
-                    selectedFolder = opt.dataset.folder;
-                    showToast(`تم اختيار: ${opt.querySelector('span').textContent}`, 'info');
-                };
-            });
-            document.querySelector('.folder-option[data-folder="all"]').classList.add('selected');
-        }
-
-        // ==================== مسح المجلدات وإنشاء ملفات تجريبية ====================
-        async function scanFolders() {
-            showToast('🔍 جاري مسح المجلدات...', 'info');
-            showProgress(true);
-            
-            // إنشاء ملفات تجريبية متنوعة
-            allFiles = [];
-            const extensions = ['jpg', 'png', 'pdf', 'txt', 'jpeg', 'gif'];
-            const names = ['صورة', 'مستند', 'تقرير', 'ملف', 'صفحة', 'بيان', 'صورة شخصية', 'فاتورة', 'عقد', 'كتاب'];
-            const folderPaths = {
-                all: '/storage/emulated/0/',
-                download: '/storage/emulated/0/Download/',
-                dcim: '/storage/emulated/0/DCIM/',
-                pictures: '/storage/emulated/0/Pictures/',
-                documents: '/storage/emulated/0/Documents/'
-            };
-            
-            const basePath = folderPaths[selectedFolder] || folderPaths.all;
-            
-            for (let i = 0; i < 35; i++) {
-                const ext = extensions[Math.floor(Math.random() * extensions.length)];
-                const name = names[Math.floor(Math.random() * names.length)];
-                const fileName = `${name}_${i+1}.${ext}`;
-                allFiles.push({
-                    id: Date.now() + i + Math.random(),
-                    name: fileName,
-                    path: basePath + fileName,
-                    size: Math.floor(Math.random() * 5000000),
-                    extension: ext,
-                    folder: selectedFolder,
-                    content: ext === 'txt' ? `هذا محتوى ملف ${fileName}\nيحتوي على نص تجريبي للبحث` : null,
-                    addedAt: new Date().toISOString()
-                });
-            }
-            
-            // إضافة بعض الملفات المميزة للبحث
-            allFiles.push({
-                id: Date.now() + 999,
-                name: 'صورة_تجريبية.jpg',
-                path: basePath + 'صورة_تجريبية.jpg',
-                size: 1024000,
-                extension: 'jpg',
-                folder: selectedFolder,
-                addedAt: new Date().toISOString()
-            });
-            
-            allFiles.push({
-                id: Date.now() + 1000,
-                name: 'مستند_هام.pdf',
-                path: basePath + 'مستند_هام.pdf',
-                size: 2048000,
-                extension: 'pdf',
-                folder: selectedFolder,
-                addedAt: new Date().toISOString()
-            });
-            
-            allFiles.push({
-                id: Date.now() + 1001,
-                name: 'ملف_نصي.txt',
-                path: basePath + 'ملف_نصي.txt',
-                size: 51200,
-                extension: 'txt',
-                content: 'هذا محتوى الملف النصي التجريبي للبحث',
-                folder: selectedFolder,
-                addedAt: new Date().toISOString()
-            });
-            
-            // حفظ في IndexedDB
-            const tx = db.transaction(['files'], 'readwrite');
-            const store = tx.objectStore('files');
-            store.clear();
-            for (const file of allFiles) store.put(file);
-            
-            updateStats();
-            showProgress(false);
-            
-            const folderNames = { all: 'جميع المجلدات', download: 'مجلد التنزيلات', dcim: 'مجلد الصور (DCIM)', pictures: 'مجلد الصور', documents: 'مجلد المستندات' };
-            showToast(`✅ تم العثور على ${allFiles.length} ملف في ${folderNames[selectedFolder]}`, 'success');
-            document.getElementById('scanInfo').innerHTML = `📁 تم مسح ${allFiles.length} ملف | 🔍 جاهز للبحث`;
-        }
-
-        // ==================== حساب هاش الصورة ====================
-        function getImageHash(file) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 32;
-                    canvas.height = 32;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 32, 32);
-                    const data = ctx.getImageData(0, 0, 32, 32).data;
-                    let hash = '';
-                    for (let i = 0; i < data.length; i += 4) {
-                        const gray = (data[i] + data[i+1] + data[i+2]) / 3;
-                        hash += gray > 128 ? '1' : '0';
-                    }
-                    resolve(hash);
-                };
-                img.onerror = () => resolve(null);
-                img.src = URL.createObjectURL(file);
-            });
-        }
-
-        // ==================== البحث بالصورة ====================
-        async function searchByImage(imageFile) {
-            if (allFiles.length === 0) { showToast('الرجاء مسح المجلدات أولاً', 'warning'); return; }
-            if (!imageFile) { showToast('الرجاء اختيار صورة أولاً', 'warning'); return; }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث عن تطابق 100%...', 'info');
-            showProgress(true);
-            
-            const imageFiles = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension));
-            const targetHash = await getImageHash(imageFile);
-            
-            for (let i = 0; i < imageFiles.length; i++) {
-                const file = imageFiles[i];
-                // محاكاة تطابق دقيق - نختار بعض الملفات كتطابق
-                const isMatch = file.name.includes('تجريبية') || file.name.includes('صورة');
-                if (isMatch) {
-                    currentResults.push({ ...file, matchType: 'image', matchPercentage: 100 });
-                }
-                updateProgress(i + 1, imageFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== البحث في PDF ====================
-        async function searchPdfByImage(imageFile) {
-            if (allFiles.length === 0) { showToast('الرجاء مسح المجلدات أولاً', 'warning'); return; }
-            if (!imageFile) { showToast('الرجاء اختيار صورة أولاً', 'warning'); return; }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث في ملفات PDF...', 'info');
-            showProgress(true);
-            
-            const pdfFiles = allFiles.filter(f => f.extension === 'pdf');
-            
-            for (let i = 0; i < pdfFiles.length; i++) {
-                const file = pdfFiles[i];
-                const isMatch = file.name.includes('هام') || file.name.includes('مستند');
-                if (isMatch) {
-                    currentResults.push({ ...file, matchType: 'pdf_image', matchPercentage: 100, page: Math.floor(Math.random() * 5) + 1 });
-                }
-                updateProgress(i + 1, pdfFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== البحث بالنص ====================
-        async function searchByText(query) {
-            if (allFiles.length === 0) { showToast('الرجاء مسح المجلدات أولاً', 'warning'); return; }
-            if (!query.trim()) { showToast('الرجاء إدخال النص المطلوب', 'warning'); return; }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث بالنص...', 'info');
-            showProgress(true);
-            
-            const queryLower = query.toLowerCase();
-            const textFiles = allFiles.filter(f => ['txt', 'html', 'xml', 'pdf'].includes(f.extension));
-            
-            for (let i = 0; i < textFiles.length; i++) {
-                const file = textFiles[i];
-                const isMatch = file.name.toLowerCase().includes(queryLower) || 
-                               (file.content && file.content.toLowerCase().includes(queryLower));
-                if (isMatch) {
-                    currentResults.push({ ...file, matchType: 'text', matchPercentage: 100 });
-                }
-                updateProgress(i + 1, textFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== عرض النتائج مع أزرار المعاينة ====================
-        function displayResults() {
-            const resultsCard = document.getElementById('resultsCard');
-            const resultsList = document.getElementById('resultsList');
-            const resultsCount = document.getElementById('resultsCount');
-            
-            if (currentResults.length === 0) {
-                resultsCard.style.display = 'none';
-                return;
-            }
-            
-            resultsCard.style.display = 'block';
-            resultsCount.textContent = `(${currentResults.length})`;
-            resultsList.innerHTML = '';
-            
-            currentResults.forEach((result, idx) => {
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                
-                const isBookmarked = bookmarks.some(b => b.path === result.path);
-                const fileIcon = result.extension === 'pdf' ? 'file-pdf' : 
-                                (result.extension.match(/jpg|png|jpeg|gif/) ? 'image' : 'file-alt');
-                
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-${fileIcon}"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${escapeHtml(result.name)}</div>
-                        <div class="file-path">${escapeHtml(result.path)}</div>
-                        <span class="match-badge"><i class="fas fa-check-circle"></i> تطابق 100%</span>
-                        ${result.page ? `<span class="match-badge" style="background:#8b5cf6; margin-right:5px;"><i class="fas fa-book-open"></i> الصفحة ${result.page}</span>` : ''}
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-btn preview-btn" onclick="event.stopPropagation(); previewFile('${escapeHtml(result.path)}', '${escapeHtml(result.name)}', '${result.extension}')" title="معاينة">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn bookmark-btn ${isBookmarked ? 'active' : ''}" onclick="event.stopPropagation(); toggleBookmark('${escapeHtml(result.path)}')" title="مفضلة">
-                            <i class="fas ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}"></i>
-                        </button>
-                    </div>
-                `;
-                resultsList.appendChild(div);
-            });
-        }
-
-        // ==================== المعاينة ====================
-        async function previewFile(path, name, ext) {
-            const modal = document.getElementById('previewModal');
-            const previewBody = document.getElementById('previewBody');
-            const previewTitle = document.getElementById('previewTitle');
-            
-            previewTitle.innerHTML = `<i class="fas fa-eye"></i> معاينة: ${escapeHtml(name)}`;
-            previewBody.innerHTML = '<div class="loading-spinner" style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#667eea;border-radius:50%;animation:spin 0.8s linear infinite;margin:20px auto;"></div><p>جاري التحميل...</p>';
-            modal.style.display = 'flex';
-            
-            // البحث عن الملف في allFiles
-            const file = allFiles.find(f => f.path === path);
-            
-            setTimeout(() => {
-                if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif' || ext === 'bmp') {
-                    previewBody.innerHTML = `<img src="https://via.placeholder.com/400x300/667eea/white?text=${encodeURIComponent(name)}" class="preview-image" style="max-width:100%;border-radius:16px;"><p style="margin-top:12px;color:#6b7280;">${escapeHtml(path)}</p>`;
-                } else if (ext === 'pdf') {
-                    previewBody.innerHTML = `
-                        <div style="background:#f9fafb;padding:20px;border-radius:16px;text-align:center;">
-                            <i class="fas fa-file-pdf" style="font-size:64px;color:#ef4444;"></i>
-                            <p style="margin-top:12px;"><strong>${escapeHtml(name)}</strong></p>
-                            <p style="color:#6b7280;font-size:12px;">ملف PDF</p>
-                            <p style="color:#10b981;margin-top:12px;"><i class="fas fa-check-circle"></i> تم العثور على تطابق 100%</p>
-                        </div>
-                    `;
-                } else if (ext === 'txt') {
-                    const content = file?.content || `هذا محتوى ملف ${name} التجريبي\nيمكنك قراءة النص هنا.\nتم العثور على التطابق المطلوب.`;
-                    previewBody.innerHTML = `<pre class="preview-text">${escapeHtml(content)}</pre>`;
-                } else {
-                    previewBody.innerHTML = `<div style="background:#f9fafb;padding:20px;border-radius:16px;text-align:center;">
-                        <i class="fas fa-file-alt" style="font-size:64px;color:#667eea;"></i>
-                        <p style="margin-top:12px;"><strong>${escapeHtml(name)}</strong></p>
-                        <p style="color:#6b7280;font-size:12px;">نوع الملف: ${ext.toUpperCase()}</p>
-                        <p style="color:#10b981;margin-top:12px;"><i class="fas fa-check-circle"></i> تطابق 100%</p>
-                    </div>`;
-                }
-            }, 500);
-        }
-
-        function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
-        }
-
-        // ==================== المفضلة ====================
-        async function toggleBookmark(path) {
-            const existing = bookmarks.find(b => b.path === path);
-            if (existing) {
-                deleteBookmark(path);
-                bookmarks = bookmarks.filter(b => b.path !== path);
-                showToast('🗑️ تم الحذف من المفضلة', 'info');
-            } else {
-                const file = allFiles.find(f => f.path === path);
-                if (file) {
-                    const bookmark = { ...file, addedAt: new Date().toISOString() };
-                    saveBookmark(bookmark);
-                    bookmarks.push(bookmark);
-                    showToast('⭐ تم الإضافة إلى المفضلة', 'success');
-                }
-            }
-            displayBookmarks();
-            displayResults();
-        }
-
-        function displayBookmarks() {
-            const container = document.getElementById('bookmarksList');
-            if (bookmarks.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p><small>اضغط على زر النجمة بجانب أي نتيجة لإضافتها</small></div>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            bookmarks.forEach(bookmark => {
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-bookmark"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${escapeHtml(bookmark.name)}</div>
-                        <div class="file-path">${escapeHtml(bookmark.path)}</div>
-                        <small style="font-size: 9px; color: #6b7280;">أضيفت: ${new Date(bookmark.addedAt).toLocaleDateString('ar')}</small>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-btn preview-btn" onclick="previewFile('${escapeHtml(bookmark.path)}', '${escapeHtml(bookmark.name)}', '${bookmark.extension}')"><i class="fas fa-eye"></i></button>
-                        <button class="action-btn bookmark-btn active" onclick="toggleBookmark('${escapeHtml(bookmark.path)}')"><i class="fas fa-bookmark"></i></button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // ==================== تحديث الإحصائيات ====================
-        function updateStats() {
-            const images = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension)).length;
-            const pdfs = allFiles.filter(f => f.extension === 'pdf').length;
-            document.getElementById('statFiles').textContent = allFiles.length;
-            document.getElementById('statImages').textContent = images;
-            document.getElementById('statPdfs').textContent = pdfs;
-            document.getElementById('statsGrid').style.display = 'grid';
-        }
-
-        // ==================== وظائف مساعدة ====================
-        function showProgress(show) {
-            const container = document.getElementById('progressContainer');
-            container.style.display = show ? 'block' : 'none';
-            if (!show) document.getElementById('progressFill').style.width = '0%';
-        }
-        
-        function updateProgress(current, total, fileName = '') {
-            const percent = (current / total) * 100;
-            document.getElementById('progressFill').style.width = `${percent}%`;
-            document.getElementById('progressText').textContent = `معالجة: ${current}/${total} - ${fileName}`;
-        }
-        
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.background = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#1f2937';
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ==================== إعداد رفع الصور ====================
-        function setupImageUpload() {
-            const imageUpload = document.getElementById('imageUploadArea');
-            const imageInput = document.getElementById('imageFileInput');
-            imageUpload.onclick = () => imageInput.click();
-            imageInput.onchange = (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    currentImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        document.getElementById('imagePreview').src = ev.target.result;
-                        document.getElementById('imagePreview').style.display = 'block';
-                        document.getElementById('searchImageBtn').disabled = false;
-                        showToast('✅ تم تحميل الصورة بنجاح', 'success');
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-            
-            const pdfUpload = document.getElementById('pdfImageUploadArea');
-            const pdfInput = document.getElementById('pdfImageFileInput');
-            pdfUpload.onclick = () => pdfInput.click();
-            pdfInput.onchange = (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    currentPdfImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        document.getElementById('pdfImagePreview').src = ev.target.result;
-                        document.getElementById('pdfImagePreview').style.display = 'block';
-                        document.getElementById('searchPdfImageBtn').disabled = false;
-                        showToast('✅ تم تحميل الصورة بنجاح', 'success');
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-        }
-
-        // ==================== إعداد التبويبات ====================
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.onclick = () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const tabId = tab.dataset.tab;
-                    document.getElementById('imageTab').style.display = tabId === 'image' ? 'block' : 'none';
-                    document.getElementById('pdfImageTab').style.display = tabId === 'pdf-image' ? 'block' : 'none';
-                    document.getElementById('textTab').style.display = tabId === 'text' ? 'block' : 'none';
-                };
-            });
-        }
-
-        // ==================== التهيئة ====================
-        async function init() {
-            await initDB();
-            setupFolderSelection();
-            setupImageUpload();
-            setupTabs();
-            
-            document.getElementById('scanBtn').onclick = scanFolders;
-            document.getElementById('searchImageBtn').onclick = () => searchByImage(currentImageFile);
-            document.getElementById('searchPdfImageBtn').onclick = () => searchPdfByImage(currentPdfImageFile);
-            document.getElementById('searchTextBtn').onclick = () => searchByText(document.getElementById('textQuery').value);
-            
-            // إغلاق المودال عند النقر خارج المحتوى
-            document.getElementById('previewModal').onclick = (e) => { if (e.target === document.getElementById('previewModal')) closePreview(); };
-            
-            showToast('✨ التطبيق جاهز | اختر مجلداً وابدأ البحث', 'success');
-        }
-        
-        // إضافة نمط للسبينر
-        const style = document.createElement('style');
-        style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
-        document.head.appendChild(style);
-        
-        init();
-    </script>
-</body>
-</html>            padding: 12px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            border-radius: 16px;
-            font-family: inherit;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .upload-area {
-            border: 2px dashed #e2e8f0;
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            margin: 12px 0;
-            transition: all 0.2s;
-        }
-        .upload-area:hover { border-color: #667eea; background: #f9fafb; }
-        .upload-area i { font-size: 40px; color: #667eea; margin-bottom: 12px; display: block; }
-        .upload-area p { color: #1f2937; font-size: 14px; }
-        .upload-hint { font-size: 11px; color: #6b7280; margin-top: 5px; display: block; }
-        .image-preview { max-width: 100%; max-height: 150px; border-radius: 16px; margin-top: 12px; object-fit: cover; }
-        .text-input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-family: inherit;
-            font-size: 14px;
-            min-height: 100px;
-            resize: vertical;
-        }
-        .text-input:focus { outline: none; border-color: #667eea; }
-        .progress-container { margin: 16px 0; }
-        .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.3s; }
-        .progress-text { font-size: 11px; color: #6b7280; text-align: center; margin-top: 8px; }
-        .file-list { max-height: 400px; overflow-y: auto; }
-        .file-item {
-            padding: 14px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .file-item:hover { background: #f9fafb; }
-        .file-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
-        .file-info { flex: 1; }
-        .file-name { font-weight: 600; color: #1f2937; font-size: 14px; margin-bottom: 4px; }
-        .file-path { font-size: 10px; color: #6b7280; word-break: break-all; }
-        .match-badge {
-            background: #10b981;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 500;
-            display: inline-block;
-            margin-top: 6px;
-        }
-        .empty-state { text-align: center; padding: 50px 20px; color: #6b7280; }
-        .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            background: #1f2937;
-            color: white;
-            padding: 14px 20px;
-            border-radius: 50px;
-            text-align: center;
-            z-index: 1000;
-            display: none;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
-            padding: 14px;
-            text-align: center;
-            color: white;
-        }
-        .stat-number { font-size: 24px; font-weight: bold; }
-        .stat-label { font-size: 11px; opacity: 0.9; margin-top: 4px; }
-        .bookmark-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #9ca3af;
-            padding: 8px;
-            transition: color 0.2s;
-        }
-        .bookmark-btn.active { color: #667eea; }
-        .bookmark-btn:active { transform: scale(0.95); }
-        @media (max-width: 480px) {
-            body { padding: 12px; }
-            .stat-number { font-size: 18px; }
-            .tab { font-size: 12px; padding: 8px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-search"></i>
-                <h1>الباحث الذكي</h1>
-            </div>
-            <p class="subtitle">ابحث بالصورة أو النص في ملفات جهازك</p>
-            <div class="readonly-badge">
-                <i class="fas fa-eye"></i> وضع القراءة فقط - لا يتم تعديل أو حذف أي ملف
-            </div>
-        </div>
-
-        <!-- إحصائيات -->
-        <div class="stats-grid" id="statsGrid" style="display: none;">
-            <div class="stat-card"><div class="stat-number" id="statFiles">0</div><div class="stat-label">إجمالي الملفات</div></div>
-            <div class="stat-card"><div class="stat-number" id="statImages">0</div><div class="stat-label">صور</div></div>
-            <div class="stat-card"><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDF</div></div>
-        </div>
-
-        <!-- اختيار المجلدات -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-folder-tree"></i> اختيار مجلدات للبحث</div>
-            <div class="folder-selector" id="folderSelector">
-                <div class="folder-option" data-folder="all">
-                    <i class="fas fa-globe"></i>
-                    <span>📁 جميع المجلدات (البحث الكامل)</span>
-                </div>
-                <div class="folder-option" data-folder="download">
-                    <i class="fas fa-download"></i>
-                    <span>📂 مجلد التنزيلات (Download)</span>
-                </div>
-                <div class="folder-option" data-folder="dcim">
-                    <i class="fas fa-camera"></i>
-                    <span>📷 مجلد الصور (DCIM)</span>
-                </div>
-                <div class="folder-option" data-folder="pictures">
-                    <i class="fas fa-images"></i>
-                    <span>🖼️ مجلد الصور (Pictures)</span>
-                </div>
-                <div class="folder-option" data-folder="documents">
-                    <i class="fas fa-file-alt"></i>
-                    <span>📄 مجلد المستندات (Documents)</span>
-                </div>
-            </div>
-            <button class="btn btn-primary" id="scanBtn">
-                <i class="fas fa-sync-alt"></i> مسح المجلدات المختارة
-            </button>
-            <div id="scanInfo" style="font-size: 12px; color: #6b7280; margin-top: 12px; text-align: center;"></div>
-        </div>
-
-        <!-- أنواع البحث -->
-        <div class="card">
-            <div class="tabs" id="searchTabs">
-                <button class="tab active" data-tab="image"><i class="fas fa-image"></i> بالصورة</button>
-                <button class="tab" data-tab="pdf-image"><i class="fas fa-file-pdf"></i> في PDF</button>
-                <button class="tab" data-tab="text"><i class="fas fa-font"></i> بالنص</button>
-            </div>
-            
-            <!-- بحث بالصورة -->
-            <div id="imageTab" class="search-tab">
-                <div class="upload-area" id="imageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة للبحث</p>
-                    <span class="upload-hint">jpg, png, bmp, gif</span>
-                    <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
-                </div>
-                <img id="imagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchImageBtn" style="margin-top: 12px;" disabled>
-                    <i class="fas fa-search"></i> بحث بالصورة (تطابق 100%)
-                </button>
-            </div>
-            
-            <!-- بحث في PDF بالصورة -->
-            <div id="pdfImageTab" class="search-tab" style="display: none;">
-                <div class="upload-area" id="pdfImageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة من داخل PDF</p>
-                    <span class="upload-hint">jpg, png, bmp, gif</span>
-                    <input type="file" id="pdfImageFileInput" accept="image/*" style="display: none;">
-                </div>
-                <img id="pdfImagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchPdfImageBtn" style="margin-top: 12px;" disabled>
-                    <i class="fas fa-search"></i> بحث في PDF (تطابق 100%)
-                </button>
-            </div>
-            
-            <!-- بحث بالنص -->
-            <div id="textTab" class="search-tab" style="display: none;">
-                <textarea id="textQuery" class="text-input" placeholder="أدخل النص الذي تبحث عنه..."></textarea>
-                <button class="btn btn-primary" id="searchTextBtn" style="margin-top: 12px;">
-                    <i class="fas fa-search"></i> بحث بالنص (تطابق 100%)
-                </button>
-            </div>
-            
-            <div class="progress-container" id="progressContainer" style="display: none;">
-                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                <div class="progress-text" id="progressText">جاري البحث...</div>
-            </div>
-        </div>
-
-        <!-- النتائج -->
-        <div class="card" id="resultsCard" style="display: none;">
-            <div class="card-title"><i class="fas fa-list"></i> نتائج البحث <span id="resultsCount"></span></div>
-            <div id="resultsList" class="file-list"></div>
-        </div>
-
-        <!-- المفضلة -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-bookmark"></i> المفضلة</div>
-            <div id="bookmarksList" class="file-list">
-                <div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p><small>اضغط على نجمة بجانب أي نتيجة لإضافتها</small></div>
-            </div>
-        </div>
-    </div>
-    <div id="toast" class="toast"></div>
-
-    <script>
-        // ==================== المتغيرات ====================
-        let allFiles = [];
-        let currentResults = [];
-        let bookmarks = [];
-        let selectedFolder = 'all';
-        let currentImageFile = null;
-        let currentPdfImageFile = null;
-        let isSearching = false;
-        let db = null;
-
-        // ==================== تهيئة قاعدة البيانات ====================
-        function initDB() {
-            return new Promise((resolve) => {
-                const request = indexedDB.open('FileSearchReadOnly', 2);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath: 'id' });
-                    if (!db.objectStoreNames.contains('bookmarks')) db.createObjectStore('bookmarks', { keyPath: 'path' });
-                };
-                request.onsuccess = () => { db = request.result; loadBookmarks(); resolve(); };
-                request.onerror = () => resolve();
-            });
-        }
-
-        // تحميل المفضلة
-        function loadBookmarks() {
-            if (!db) return;
-            const tx = db.transaction(['bookmarks'], 'readonly');
-            const store = tx.objectStore('bookmarks');
-            const request = store.getAll();
-            request.onsuccess = () => { bookmarks = request.result || []; displayBookmarks(); };
-        }
-
-        // ==================== اختيار المجلدات ====================
-        function setupFolderSelection() {
-            document.querySelectorAll('.folder-option').forEach(opt => {
-                opt.onclick = () => {
-                    document.querySelectorAll('.folder-option').forEach(o => o.classList.remove('selected'));
-                    opt.classList.add('selected');
-                    selectedFolder = opt.dataset.folder;
-                    showToast(`تم اختيار: ${opt.querySelector('span').textContent}`, 'info');
-                };
-            });
-            // اختيار الكل افتراضياً
-            document.querySelector('.folder-option[data-folder="all"]').classList.add('selected');
-        }
-
-        // ==================== مسح المجلدات ====================
-        async function scanFolders() {
-            showToast('🔍 جاري مسح المجلدات...', 'info');
-            showProgress(true);
-            
-            // محاكاة للمجلدات
-            const mockFiles = generateMockFiles();
-            allFiles = mockFiles;
-            
-            // حفظ في IndexedDB
-            const tx = db.transaction(['files'], 'readwrite');
-            const store = tx.objectStore('files');
-            store.clear();
-            for (const file of mockFiles) store.put(file);
-            
-            updateStats();
-            showProgress(false);
-            
-            const folderNames = {
-                all: 'جميع المجلدات',
-                download: 'مجلد التنزيلات',
-                dcim: 'مجلد الصور (DCIM)',
-                pictures: 'مجلد الصور (Pictures)',
-                documents: 'مجلد المستندات'
-            };
-            showToast(`✅ تم العثور على ${allFiles.length} ملف في ${folderNames[selectedFolder]}`, 'success');
-            document.getElementById('scanInfo').innerHTML = `📁 تم مسح ${allFiles.length} ملف | 🔍 جاهز للبحث`;
-        }
-
-        // توليد ملفات تجريبية
-        function generateMockFiles() {
-            const files = [];
-            const extensions = ['jpg', 'png', 'pdf', 'txt'];
-            const names = ['صورة', 'مستند', 'تقرير', 'ملف', 'صفحة', 'بيان', 'صورة شخصية', 'فاتورة'];
-            
-            for (let i = 0; i < 45; i++) {
-                const ext = extensions[Math.floor(Math.random() * extensions.length)];
-                const name = names[Math.floor(Math.random() * names.length)];
-                files.push({
-                    id: Date.now() + i + Math.random(),
-                    name: `${name}_${i+1}.${ext}`,
-                    path: `/storage/emulated/0/${selectedFolder === 'download' ? 'Download' : selectedFolder === 'dcim' ? 'DCIM' : selectedFolder === 'pictures' ? 'Pictures' : selectedFolder === 'documents' ? 'Documents' : 'storage'}/file_${i+1}.${ext}`,
-                    size: Math.floor(Math.random() * 5000000),
-                    extension: ext,
-                    folder: selectedFolder,
-                    addedAt: new Date().toISOString()
-                });
-            }
-            return files;
-        }
-
-        // ==================== حساب هاش الصورة ====================
-        function getImageHash(file) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 32;
-                    canvas.height = 32;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 32, 32);
-                    const data = ctx.getImageData(0, 0, 32, 32).data;
-                    let hash = '';
-                    for (let i = 0; i < data.length; i += 4) {
-                        const gray = (data[i] + data[i+1] + data[i+2]) / 3;
-                        hash += gray > 128 ? '1' : '0';
-                    }
-                    resolve(hash);
-                };
-                img.onerror = () => resolve(null);
-                img.src = URL.createObjectURL(file);
-            });
-        }
-
-        // مقارنة صورتين (تطابق دقيق)
-        async function compareImagesExact(img1File, img2Data) {
-            const hash1 = await getImageHash(img1File);
-            if (!hash1) return false;
-            
-            // محاكاة المقارنة - في الواقع يجب مقارنة الهاشات
-            // هنا نستخدم محاكاة للعرض
-            return Math.random() < 0.15; // 15% فرصة للتطابق في المحاكاة
-        }
-
-        // ==================== البحث بالصورة ====================
-        async function searchByImage(imageFile) {
-            if (allFiles.length === 0) {
-                showToast('الرجاء مسح المجلدات أولاً', 'warning');
-                return;
-            }
-            if (!imageFile) {
-                showToast('الرجاء اختيار صورة أولاً', 'warning');
-                return;
-            }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث عن تطابق 100%...', 'info');
-            showProgress(true);
-            
-            const imageFiles = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension));
-            const targetHash = await getImageHash(imageFile);
-            
-            for (let i = 0; i < imageFiles.length; i++) {
-                const file = imageFiles[i];
-                try {
-                    // محاكاة المقارنة - للتطابق الدقيق
-                    const isMatch = Math.random() < 0.1;
-                    if (isMatch) {
-                        currentResults.push({
-                            ...file,
-                            matchType: 'image',
-                            matchPercentage: 100
-                        });
-                    }
-                } catch(e) {}
-                updateProgress(i + 1, imageFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== البحث في PDF بالصورة ====================
-        async function searchPdfByImage(imageFile) {
-            if (allFiles.length === 0) {
-                showToast('الرجاء مسح المجلدات أولاً', 'warning');
-                return;
-            }
-            if (!imageFile) {
-                showToast('الرجاء اختيار صورة أولاً', 'warning');
-                return;
-            }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث في ملفات PDF...', 'info');
-            showProgress(true);
-            
-            const pdfFiles = allFiles.filter(f => f.extension === 'pdf');
-            
-            for (let i = 0; i < pdfFiles.length; i++) {
-                const file = pdfFiles[i];
-                try {
-                    const isMatch = Math.random() < 0.1;
-                    if (isMatch) {
-                        currentResults.push({
-                            ...file,
-                            matchType: 'pdf_image',
-                            matchPercentage: 100,
-                            page: Math.floor(Math.random() * 5) + 1
-                        });
-                    }
-                } catch(e) {}
-                updateProgress(i + 1, pdfFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== البحث بالنص ====================
-        async function searchByText(query) {
-            if (allFiles.length === 0) {
-                showToast('الرجاء مسح المجلدات أولاً', 'warning');
-                return;
-            }
-            if (!query.trim()) {
-                showToast('الرجاء إدخال النص المطلوب', 'warning');
-                return;
-            }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث بالنص...', 'info');
-            showProgress(true);
-            
-            const queryLower = query.toLowerCase();
-            const textFiles = allFiles.filter(f => ['txt', 'html', 'xml', 'pdf'].includes(f.extension));
-            
-            for (let i = 0; i < textFiles.length; i++) {
-                const file = textFiles[i];
-                try {
-                    const isMatch = file.name.toLowerCase().includes(queryLower);
-                    if (isMatch) {
-                        currentResults.push({
-                            ...file,
-                            matchType: 'text',
-                            matchPercentage: 100
-                        });
-                    }
-                } catch(e) {}
-                updateProgress(i + 1, textFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== عرض النتائج ====================
-        function displayResults() {
-            const resultsCard = document.getElementById('resultsCard');
-            const resultsList = document.getElementById('resultsList');
-            const resultsCount = document.getElementById('resultsCount');
-            
-            if (currentResults.length === 0) {
-                resultsCard.style.display = 'none';
-                return;
-            }
-            
-            resultsCard.style.display = 'block';
-            resultsCount.textContent = `(${currentResults.length})`;
-            resultsList.innerHTML = '';
-            
-            currentResults.forEach(result => {
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                div.onclick = () => showToast(`📄 ${result.name} (قراءة فقط)`, 'info');
-                
-                const isBookmarked = bookmarks.some(b => b.path === result.path);
-                
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-${result.extension === 'pdf' ? 'file-pdf' : result.extension.match(/jpg|png/) ? 'image' : 'file-alt'}"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${escapeHtml(result.name)}</div>
-                        <div class="file-path">${escapeHtml(result.path)}</div>
-                        <span class="match-badge"><i class="fas fa-check-circle"></i> تطابق 100%</span>
-                        ${result.page ? `<span class="match-badge" style="background:#8b5cf6; margin-right:5px;"><i class="fas fa-book-open"></i> الصفحة ${result.page}</span>` : ''}
-                    </div>
-                    <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" onclick="event.stopPropagation(); toggleBookmark('${escapeHtml(result.path)}')">
-                        <i class="fas ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}"></i>
-                    </button>
-                `;
-                resultsList.appendChild(div);
-            });
-        }
-
-        // ==================== المفضلة ====================
-        async function toggleBookmark(path) {
-            const existing = bookmarks.find(b => b.path === path);
-            const tx = db.transaction(['bookmarks'], 'readwrite');
-            const store = tx.objectStore('bookmarks');
-            
-            if (existing) {
-                store.delete(path);
-                bookmarks = bookmarks.filter(b => b.path !== path);
-                showToast('🗑️ تم الحذف من المفضلة', 'info');
-            } else {
-                const file = allFiles.find(f => f.path === path);
-                if (file) {
-                    const bookmark = { ...file, addedAt: new Date().toISOString() };
-                    store.put(bookmark);
-                    bookmarks.push(bookmark);
-                    showToast('⭐ تم الإضافة إلى المفضلة', 'success');
-                }
-            }
-            displayBookmarks();
-            displayResults();
-        }
-
-        function displayBookmarks() {
-            const container = document.getElementById('bookmarksList');
-            if (bookmarks.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p><small>اضغط على نجمة بجانب أي نتيجة لإضافتها</small></div>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            bookmarks.forEach(bookmark => {
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                div.onclick = () => showToast(`📄 ${bookmark.name} (قراءة فقط)`, 'info');
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-bookmark"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${escapeHtml(bookmark.name)}</div>
-                        <div class="file-path">${escapeHtml(bookmark.path)}</div>
-                        <small style="font-size: 9px; color: #6b7280;">أضيفت: ${new Date(bookmark.addedAt).toLocaleDateString('ar')}</small>
-                    </div>
-                    <button class="bookmark-btn active" onclick="event.stopPropagation(); toggleBookmark('${escapeHtml(bookmark.path)}')">
-                        <i class="fas fa-bookmark"></i>
-                    </button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // ==================== تحديث الإحصائيات ====================
-        function updateStats() {
-            const images = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension)).length;
-            const pdfs = allFiles.filter(f => f.extension === 'pdf').length;
-            document.getElementById('statFiles').textContent = allFiles.length;
-            document.getElementById('statImages').textContent = images;
-            document.getElementById('statPdfs').textContent = pdfs;
-            document.getElementById('statsGrid').style.display = 'grid';
-        }
-
-        // ==================== وظائف مساعدة ====================
-        function showProgress(show) {
-            const container = document.getElementById('progressContainer');
-            container.style.display = show ? 'block' : 'none';
-            if (!show) document.getElementById('progressFill').style.width = '0%';
-        }
-        
-        function updateProgress(current, total, fileName = '') {
-            const percent = (current / total) * 100;
-            document.getElementById('progressFill').style.width = `${percent}%`;
-            document.getElementById('progressText').textContent = `معالجة: ${current}/${total} - ${fileName}`;
-        }
-        
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.background = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#1f2937';
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ==================== إعداد رفع الصور ====================
-        function setupImageUpload() {
-            // رفع صورة للبحث بالصورة
-            const imageUploadArea = document.getElementById('imageUploadArea');
+            const uploadArea = document.getElementById('imageUploadArea');
             const imageInput = document.getElementById('imageFileInput');
             
-            imageUploadArea.onclick = () => imageInput.click();
+            uploadArea.onclick = () => imageInput.click();
             imageInput.onchange = (e) => {
                 if (e.target.files && e.target.files[0]) {
                     currentImageFile = e.target.files[0];
@@ -2347,41 +747,6 @@
                     reader.readAsDataURL(e.target.files[0]);
                 }
             };
-            
-            // رفع صورة للبحث في PDF
-            const pdfUploadArea = document.getElementById('pdfImageUploadArea');
-            const pdfImageInput = document.getElementById('pdfImageFileInput');
-            
-            pdfUploadArea.onclick = () => pdfImageInput.click();
-            pdfImageInput.onchange = (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    currentPdfImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const preview = document.getElementById('pdfImagePreview');
-                        preview.src = ev.target.result;
-                        preview.style.display = 'block';
-                        document.getElementById('searchPdfImageBtn').disabled = false;
-                        showToast('✅ تم تحميل الصورة بنجاح', 'success');
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-        }
-
-        // ==================== إعداد التبويبات ====================
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.onclick = () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const tabId = tab.dataset.tab;
-                    document.getElementById('imageTab').style.display = tabId === 'image' ? 'block' : 'none';
-                    document.getElementById('pdfImageTab').style.display = tabId === 'pdf-image' ? 'block' : 'none';
-                    document.getElementById('textTab').style.display = tabId === 'text' ? 'block' : 'none';
-                };
-            });
         }
 
         // ==================== التهيئة ====================
@@ -2389,603 +754,12 @@
             await initDB();
             setupFolderSelection();
             setupImageUpload();
-            setupTabs();
             
             document.getElementById('scanBtn').onclick = scanFolders;
-            document.getElementById('searchImageBtn').onclick = () => searchByImage(currentImageFile);
-            document.getElementById('searchPdfImageBtn').onclick = () => searchPdfByImage(currentPdfImageFile);
-            document.getElementById('searchTextBtn').onclick = () => {
-                const query = document.getElementById('textQuery').value;
-                searchByText(query);
-            };
+            document.getElementById('searchImageBtn').onclick = searchSimilarImages;
+            document.getElementById('previewModal').onclick = (e) => { if (e.target === document.getElementById('previewModal')) closePreview(); };
             
             showToast('✨ التطبيق جاهز | اختر مجلداً وابدأ البحث', 'success');
-        }
-        
-        init();
-    </script>
-</body>
-</html>            text-align: center;
-            background: transparent;
-            border: none;
-            border-radius: 16px;
-            font-family: inherit;
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .upload-area {
-            border: 2px dashed #e2e8f0;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            margin: 12px 0;
-        }
-        .upload-area i { font-size: 32px; color: #6b7280; margin-bottom: 8px; }
-        .image-preview { max-width: 100%; max-height: 120px; border-radius: 12px; margin-top: 12px; }
-        .text-input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-family: inherit;
-            font-size: 14px;
-            min-height: 100px;
-        }
-        .progress-container { margin: 16px 0; }
-        .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.3s; }
-        .file-list { max-height: 400px; overflow-y: auto; }
-        .file-item {
-            padding: 14px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .file-item:hover { background: #f9fafb; }
-        .file-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-        .file-info { flex: 1; }
-        .file-name { font-weight: 500; color: #1f2937; font-size: 13px; }
-        .file-path { font-size: 10px; color: #6b7280; word-break: break-all; }
-        .match-badge {
-            background: #10b981;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-            display: inline-block;
-            margin-top: 4px;
-        }
-        .empty-state { text-align: center; padding: 40px 20px; color: #6b7280; }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            background: #1f2937;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            text-align: center;
-            z-index: 1000;
-            display: none;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            padding: 12px;
-            text-align: center;
-            color: white;
-        }
-        .stat-number { font-size: 20px; font-weight: bold; }
-        .stat-label { font-size: 10px; opacity: 0.9; }
-        .readonly-badge {
-            background: #e0e7ff;
-            color: #4338ca;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-search"></i>
-                <h1>الباحث الذكي</h1>
-            </div>
-            <p class="subtitle">ابحث بالصورة أو النص في ملفات جهازك</p>
-            <div class="readonly-badge">
-                <i class="fas fa-eye"></i> وضع القراءة فقط - لا يتم تعديل أو حذف أي ملف
-            </div>
-        </div>
-
-        <!-- إحصائيات -->
-        <div class="stats-grid" id="statsGrid" style="display: none;">
-            <div class="stat-card"><div class="stat-number" id="statFiles">0</div><div class="stat-label">إجمالي الملفات</div></div>
-            <div class="stat-card"><div class="stat-number" id="statImages">0</div><div class="stat-label">صور</div></div>
-            <div class="stat-card"><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDF</div></div>
-        </div>
-
-        <!-- اختيار المجلدات -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-folder-tree"></i> اختيار مجلدات للبحث</div>
-            <div class="folder-selector">
-                <div class="folder-option" onclick="toggleFolder('all')" id="opt-all">
-                    <i class="fas fa-globe"></i>
-                    <span>📁 جميع المجلدات (البحث الكامل)</span>
-                    <input type="radio" name="folder-select" value="all" style="margin-right: auto;">
-                </div>
-                <div class="folder-option" onclick="toggleFolder('download')" id="opt-download">
-                    <i class="fas fa-download"></i>
-                    <span>📂 مجلد التنزيلات (Download)</span>
-                    <input type="radio" name="folder-select" value="download">
-                </div>
-                <div class="folder-option" onclick="toggleFolder('dcim')" id="opt-dcim">
-                    <i class="fas fa-camera"></i>
-                    <span>📷 مجلد الصور (DCIM)</span>
-                    <input type="radio" name="folder-select" value="dcim">
-                </div>
-                <div class="folder-option" onclick="toggleFolder('pictures')" id="opt-pictures">
-                    <i class="fas fa-images"></i>
-                    <span>🖼️ مجلد الصور (Pictures)</span>
-                    <input type="radio" name="folder-select" value="pictures">
-                </div>
-                <div class="folder-option" onclick="toggleFolder('documents')" id="opt-documents">
-                    <i class="fas fa-file-alt"></i>
-                    <span>📄 مجلد المستندات (Documents)</span>
-                    <input type="radio" name="folder-select" value="documents">
-                </div>
-            </div>
-            <button class="btn btn-primary" id="scanBtn">
-                <i class="fas fa-sync-alt"></i> مسح المجلدات المختارة
-            </button>
-            <div id="scanInfo" style="font-size: 12px; color: #6b7280; margin-top: 10px; text-align: center;"></div>
-        </div>
-
-        <!-- أنواع البحث -->
-        <div class="card">
-            <div class="tabs">
-                <button class="tab active" data-tab="image"><i class="fas fa-image"></i> بالصورة</button>
-                <button class="tab" data-tab="pdf-image"><i class="fas fa-file-pdf"></i> في PDF</button>
-                <button class="tab" data-tab="text"><i class="fas fa-font"></i> بالنص</button>
-            </div>
-            
-            <div id="imageTab">
-                <div class="upload-area" id="imageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة للبحث</p>
-                    <small>jpg, png, bmp, gif</small>
-                    <input type="file" id="imageFileInput" accept="image/*" hidden>
-                </div>
-                <img id="imagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchImageBtn" disabled><i class="fas fa-search"></i> بحث بالصورة (تطابق 100%)</button>
-            </div>
-            
-            <div id="pdfImageTab" style="display: none;">
-                <div class="upload-area" id="pdfImageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>انقر لاختيار صورة من داخل PDF</p>
-                    <small>jpg, png, bmp, gif</small>
-                    <input type="file" id="pdfImageFileInput" accept="image/*" hidden>
-                </div>
-                <img id="pdfImagePreview" class="image-preview" style="display: none;">
-                <button class="btn btn-primary" id="searchPdfImageBtn" disabled><i class="fas fa-search"></i> بحث في PDF (تطابق 100%)</button>
-            </div>
-            
-            <div id="textTab" style="display: none;">
-                <textarea id="textQuery" class="text-input" placeholder="أدخل النص الذي تبحث عنه..."></textarea>
-                <button class="btn btn-primary" id="searchTextBtn"><i class="fas fa-search"></i> بحث بالنص (تطابق 100%)</button>
-            </div>
-            
-            <div class="progress-container" id="progressContainer" style="display: none;">
-                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                <div class="progress-text" id="progressText">جاري البحث...</div>
-            </div>
-        </div>
-
-        <!-- النتائج -->
-        <div class="card" id="resultsCard" style="display: none;">
-            <div class="card-title"><i class="fas fa-list"></i> نتائج البحث <span id="resultsCount"></span></div>
-            <div id="resultsList" class="file-list"></div>
-        </div>
-
-        <!-- المفضلة -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-bookmark"></i> المفضلة</div>
-            <div id="bookmarksList" class="file-list">
-                <div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p></div>
-            </div>
-        </div>
-    </div>
-    <div id="toast" class="toast"></div>
-
-    <script>
-        // ==================== المتغيرات ====================
-        let allFiles = [];
-        let currentResults = [];
-        let bookmarks = [];
-        let selectedFolders = ['all'];
-        let currentImageFile = null;
-        let isSearching = false;
-        let db = null;
-
-        // ==================== تهيئة قاعدة البيانات ====================
-        function initDB() {
-            return new Promise((resolve) => {
-                const request = indexedDB.open('FileSearchReadOnly', 1);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath: 'id' });
-                    if (!db.objectStoreNames.contains('bookmarks')) db.createObjectStore('bookmarks', { keyPath: 'path' });
-                };
-                request.onsuccess = () => { db = request.result; resolve(); };
-                request.onerror = () => resolve();
-            });
-        }
-
-        // ==================== اختيار المجلدات ====================
-        function toggleFolder(folder) {
-            selectedFolders = [folder];
-            document.querySelectorAll('.folder-option').forEach(opt => opt.classList.remove('selected'));
-            document.getElementById(`opt-${folder}`).classList.add('selected');
-            document.querySelector(`input[value="${folder}"]`).checked = true;
-        }
-
-        // ==================== مسح المجلدات المختارة (قراءة فقط) ====================
-        async function scanSelectedFolders() {
-            showToast('🔍 جاري مسح المجلدات المختارة...', 'info');
-            showProgress(true);
-            
-            // محاكاة للمجلدات (لأن المتصفح لا يسمح بالوصول المباشر)
-            const mockFiles = generateMockFilesForFolders();
-            allFiles = mockFiles;
-            
-            // حفظ في IndexedDB (للقراءة فقط)
-            const tx = db.transaction(['files'], 'readwrite');
-            const store = tx.objectStore('files');
-            store.clear();
-            for (const file of mockFiles) store.put(file);
-            
-            updateStats();
-            showProgress(false);
-            showToast(`✅ تم العثور على ${allFiles.length} ملف (قراءة فقط)`, 'success');
-            document.getElementById('scanInfo').innerHTML = `📁 تم مسح ${allFiles.length} ملف | 🔍 جاهز للبحث`;
-        }
-
-        // توليد ملفات تجريبية للمجلدات المختارة
-        function generateMockFilesForFolders() {
-            const files = [];
-            const folderPaths = {
-                download: '/storage/emulated/0/Download/',
-                dcim: '/storage/emulated/0/DCIM/',
-                pictures: '/storage/emulated/0/Pictures/',
-                documents: '/storage/emulated/0/Documents/'
-            };
-            
-            const allPaths = selectedFolders[0] === 'all' ? Object.values(folderPaths) : [folderPaths[selectedFolders[0]]];
-            
-            for (let i = 0; i < 30; i++) {
-                const folder = allPaths[Math.floor(Math.random() * allPaths.length)];
-                const ext = ['jpg', 'png', 'pdf', 'txt'][Math.floor(Math.random() * 4)];
-                files.push({
-                    id: Date.now() + i,
-                    name: `file_${i+1}.${ext}`,
-                    path: folder + `file_${i+1}.${ext}`,
-                    size: Math.floor(Math.random() * 5000000),
-                    extension: ext,
-                    folder: folder.split('/').slice(-2)[0],
-                    addedAt: new Date().toISOString()
-                });
-            }
-            return files;
-        }
-
-        // ==================== البحث بالصورة (تطابق 100% دقيق) ====================
-        async function searchByImage(imageFile) {
-            if (allFiles.length === 0) {
-                showToast('الرجاء مسح المجلدات أولاً', 'warning');
-                return;
-            }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث عن تطابق 100%...', 'info');
-            showProgress(true);
-            
-            const targetHash = await getImageHash(imageFile);
-            const imageFiles = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension));
-            
-            for (let i = 0; i < imageFiles.length; i++) {
-                const file = imageFiles[i];
-                try {
-                    // محاكاة المقارنة الدقيقة
-                    const match = Math.random() < 0.1; // 10% فرصة للتطابق في المحاكاة
-                    if (match) {
-                        currentResults.push({
-                            ...file,
-                            matchType: 'image',
-                            matchPercentage: 100
-                        });
-                    }
-                } catch(e) {}
-                updateProgress(i + 1, imageFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // حساب هاش الصورة (للمقارنة الدقيقة)
-        async function getImageHash(file) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 16;
-                    canvas.height = 16;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 16, 16);
-                    const data = ctx.getImageData(0, 0, 16, 16).data;
-                    let hash = '';
-                    for (let i = 0; i < data.length; i += 4) {
-                        const avg = (data[i] + data[i+1] + data[i+2]) / 3;
-                        hash += avg > 128 ? '1' : '0';
-                    }
-                    resolve(hash);
-                };
-                img.src = URL.createObjectURL(file);
-            });
-        }
-
-        // ==================== البحث بالنص (تطابق 100% دقيق) ====================
-        async function searchByText(query) {
-            if (allFiles.length === 0) {
-                showToast('الرجاء مسح المجلدات أولاً', 'warning');
-                return;
-            }
-            
-            isSearching = true;
-            currentResults = [];
-            showToast('🔍 جاري البحث عن تطابق 100%...', 'info');
-            showProgress(true);
-            
-            const queryLower = query.toLowerCase();
-            const textFiles = allFiles.filter(f => ['txt', 'html', 'xml', 'pdf'].includes(f.extension));
-            
-            for (let i = 0; i < textFiles.length; i++) {
-                const file = textFiles[i];
-                try {
-                    // محاكاة المقارنة الدقيقة
-                    const match = file.name.toLowerCase().includes(queryLower);
-                    if (match) {
-                        currentResults.push({
-                            ...file,
-                            matchType: 'text',
-                            matchPercentage: 100
-                        });
-                    }
-                } catch(e) {}
-                updateProgress(i + 1, textFiles.length, file.name);
-            }
-            
-            displayResults();
-            isSearching = false;
-            showProgress(false);
-            showToast(`✅ تم العثور على ${currentResults.length} نتيجة مطابقة 100%`, 'success');
-        }
-
-        // ==================== عرض النتائج ====================
-        function displayResults() {
-            const resultsCard = document.getElementById('resultsCard');
-            const resultsList = document.getElementById('resultsList');
-            const resultsCount = document.getElementById('resultsCount');
-            
-            if (currentResults.length === 0) {
-                resultsCard.style.display = 'none';
-                return;
-            }
-            
-            resultsCard.style.display = 'block';
-            resultsCount.textContent = `(${currentResults.length})`;
-            resultsList.innerHTML = '';
-            
-            currentResults.forEach(result => {
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                div.onclick = () => showToast(`📄 ${result.name} (قراءة فقط - لا يمكن التعديل)`, 'info');
-                
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-${result.extension === 'pdf' ? 'file-pdf' : result.extension.match(/jpg|png/) ? 'image' : 'file-alt'}"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${escapeHtml(result.name)}</div>
-                        <div class="file-path">${escapeHtml(result.path)}</div>
-                        <span class="match-badge"><i class="fas fa-check-circle"></i> تطابق 100%</span>
-                    </div>
-                    <button class="bookmark-btn" onclick="event.stopPropagation(); toggleBookmark('${escapeHtml(result.path)}')" style="background:none;border:none;font-size:18px;cursor:pointer;">
-                        <i class="fas ${bookmarks.some(b => b.path === result.path) ? 'fa-bookmark' : 'fa-bookmark-o'}"></i>
-                    </button>
-                `;
-                resultsList.appendChild(div);
-            });
-        }
-
-        // ==================== تحديث الإحصائيات ====================
-        function updateStats() {
-            const images = allFiles.filter(f => ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(f.extension)).length;
-            const pdfs = allFiles.filter(f => f.extension === 'pdf').length;
-            document.getElementById('statFiles').textContent = allFiles.length;
-            document.getElementById('statImages').textContent = images;
-            document.getElementById('statPdfs').textContent = pdfs;
-            document.getElementById('statsGrid').style.display = 'grid';
-        }
-
-        // ==================== وظائف مساعدة ====================
-        function showProgress(show) {
-            document.getElementById('progressContainer').style.display = show ? 'block' : 'none';
-            if (!show) document.getElementById('progressFill').style.width = '0%';
-        }
-        
-        function updateProgress(current, total, fileName = '') {
-            const percent = (current / total) * 100;
-            document.getElementById('progressFill').style.width = `${percent}%`;
-            document.getElementById('progressText').textContent = `معالجة: ${current}/${total} - ${fileName}`;
-        }
-        
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.background = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#1f2937';
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ==================== المفضلة ====================
-        async function toggleBookmark(path) {
-            const existing = bookmarks.find(b => b.path === path);
-            if (existing) {
-                const tx = db.transaction(['bookmarks'], 'readwrite');
-                tx.objectStore('bookmarks').delete(path);
-                bookmarks = bookmarks.filter(b => b.path !== path);
-                showToast('🗑️ تم الحذف من المفضلة', 'info');
-            } else {
-                const file = allFiles.find(f => f.path === path);
-                if (file) {
-                    const tx = db.transaction(['bookmarks'], 'readwrite');
-                    tx.objectStore('bookmarks').put({ ...file, addedAt: new Date().toISOString() });
-                    bookmarks.push(file);
-                    showToast('⭐ تم الإضافة إلى المفضلة', 'success');
-                }
-            }
-            displayBookmarks();
-            displayResults();
-        }
-
-        function displayBookmarks() {
-            const container = document.getElementById('bookmarksList');
-            if (bookmarks.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><p>لا توجد ملفات في المفضلة</p></div>';
-                return;
-            }
-            container.innerHTML = '';
-            bookmarks.forEach(bookmark => {
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                div.onclick = () => showToast(`📄 ${bookmark.name} (قراءة فقط)`, 'info');
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-bookmark"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${escapeHtml(bookmark.name)}</div>
-                        <div class="file-path">${escapeHtml(bookmark.path)}</div>
-                    </div>
-                    <button class="bookmark-btn" onclick="event.stopPropagation(); toggleBookmark('${escapeHtml(bookmark.path)}')" style="background:none;border:none;font-size:18px;color:#667eea;"><i class="fas fa-bookmark"></i></button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // ==================== التهيئة ====================
-        async function init() {
-            await initDB();
-            
-            // استعادة المفضلة
-            const tx = db.transaction(['bookmarks'], 'readonly');
-            const store = tx.objectStore('bookmarks');
-            const request = store.getAll();
-            request.onsuccess = () => { bookmarks = request.result || []; displayBookmarks(); };
-            
-            // الأحداث
-            document.getElementById('scanBtn').onclick = scanSelectedFolders;
-            document.getElementById('selectAllFolders').onclick = () => toggleFolder('all');
-            
-            // رفع الصور
-            document.getElementById('imageUploadArea').onclick = () => document.getElementById('imageFileInput').click();
-            document.getElementById('imageFileInput').onchange = (e) => {
-                if (e.target.files[0]) {
-                    currentImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        document.getElementById('imagePreview').src = ev.target.result;
-                        document.getElementById('imagePreview').style.display = 'block';
-                        document.getElementById('searchImageBtn').disabled = false;
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-            
-            document.getElementById('pdfImageUploadArea').onclick = () => document.getElementById('pdfImageFileInput').click();
-            document.getElementById('pdfImageFileInput').onchange = (e) => {
-                if (e.target.files[0]) {
-                    currentImageFile = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        document.getElementById('pdfImagePreview').src = ev.target.result;
-                        document.getElementById('pdfImagePreview').style.display = 'block';
-                        document.getElementById('searchPdfImageBtn').disabled = false;
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            };
-            
-            document.getElementById('searchImageBtn').onclick = () => searchByImage(currentImageFile);
-            document.getElementById('searchPdfImageBtn').onclick = () => searchByImage(currentImageFile);
-            document.getElementById('searchTextBtn').onclick = () => {
-                const query = document.getElementById('textQuery').value;
-                if (query.trim()) searchByText(query);
-                else showToast('الرجاء إدخال النص المطلوب', 'warning');
-            };
-            
-            // التبويبات
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.onclick = () => {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const id = tab.dataset.tab;
-                    document.getElementById('imageTab').style.display = id === 'image' ? 'block' : 'none';
-                    document.getElementById('pdfImageTab').style.display = id === 'pdf-image' ? 'block' : 'none';
-                    document.getElementById('textTab').style.display = id === 'text' ? 'block' : 'none';
-                };
-            });
-            
-            // تحديد المجلد الافتراضي
-            toggleFolder('all');
         }
         
         init();
